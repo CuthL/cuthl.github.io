@@ -38,5 +38,16 @@
             greeting = "Good Evening";
         }
 
+        let arrivalDate = new Date();
+        arrivalDate.setDate(now.getDate() + 7);
+        let formattedArrivalDate = arrivalDate.toDateString();
+        
+        document.body.innerHTML = `
+            <h2>${greeting}, ${name}! Thank you for Ordering!</h2>
+            <p><strong>Item Ordered:</strong> ${item}</p>
+            <p><strong>Quantity:</strong> ${quantity}</p>
+            <p><strong>Expected Arrival Date:</strong> ${formattedArrivalDate}</p>
+        `;
+
     </script>
 </body>
