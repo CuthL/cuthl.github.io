@@ -86,9 +86,31 @@
 
     const maskedPassword = "*".repeat(user.password.length);
 
-    
-    resultDiv.classList.remove("hidden");
-  }
-    </script>
+    resultContent.innerHTML = "";
+
+    const heading = document.createElement("h4");
+    heading.className = "text-success";
+    heading.textContent = "Registration Successful!";
+    resultContent.appendChild(heading);
+
+    const fields = [
+        { label: "First Name", value: user.fname },
+        { label: "Last Name", value: user.lname },
+        { label: "Email", value: user.email },
+        { label: "Password", value: maskedPassword },
+        { label: "Date of Birth", value: user.dob }
+        ];
+
+    fields.forEach(field => {
+    const p = document.createElement("p");
+    const strong = document.createElement("strong");
+    strong.textContent = `${field.label}: `;
+    p.appendChild(strong);
+    p.append(field.value);
+        resultContent.appendChild(p);
+    });
+        resultDiv.classList.remove("hidden");
+    }
+</script>
 
 </body>
