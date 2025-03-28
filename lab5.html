@@ -59,58 +59,58 @@
 
     <script>
         function submitForm() {
-    const elements = document.getElementById("registrationForm").elements;
-    const inputs = Array.from(elements);
-    let user = {};
+        const elements = document.getElementById("registrationForm").elements;
+        const inputs = Array.from(elements);
+        let user = {};
 
-    inputs.forEach((el) => {
-      if (el.name) {
-        user[el.name] = el.value.trim();
-      }
-    });
+        inputs.forEach((el) => {
+        if (el.name) {
+            user[el.name] = el.value.trim();
+        }
+        });
 
-    const resultContent = document.getElementById("registrationResult");
-    const resultDiv = resultContent; 
+        const resultContent = document.getElementById("registrationResult");
+        const resultDiv = resultContent; 
 
-    if (!user.fname || !user.lname || !user.email || !user.password || !user.dob) {
-      resultContent.innerHTML = `<h4 class="text-danger">Registration Failed</h4><p>All fields must be filled out.</p>`;
-      resultDiv.classList.remove("hidden");
-      return;
-    }
-
-    if (!(user.password.includes("!") || user.password.includes("?"))) {
-      resultContent.innerHTML = `<h4 class="text-danger">Registration Failed</h4><p>Password must contain "!" or "?".</p>`;
-      resultDiv.classList.remove("hidden");
-      return;
-    }
-
-    const maskedPassword = "*".repeat(user.password.length);
-
-    resultContent.innerHTML = "";
-
-    const heading = document.createElement("h4");
-    heading.className = "text-success";
-    heading.textContent = "Registration Successful!";
-    resultContent.appendChild(heading);
-
-    const fields = [
-        { label: "First Name", value: user.firstName },
-        { label: "Last Name", value: user.lastName },
-        { label: "Email", value: user.email },
-        { label: "Password", value: password },
-        { label: "Date of Birth", value: user.dob }
-        ];
-
-    fields.forEach(field => {
-    const p = document.createElement("p");
-    const strong = document.createElement("strong");
-    strong.textContent = `${field.label}: `;
-    p.appendChild(strong);
-    p.append(field.value);
-        resultContent.appendChild(p);
-    });
+        if (!user.firstName || !user.lastName || !user.email || !user.password || !user.dob) {
+        resultContent.innerHTML = `<h4 class="text-danger">Registration Failed</h4><p>All fields must be filled out.</p>`;
         resultDiv.classList.remove("hidden");
-    }
+        return;
+        }
+
+        if (!(user.password.includes("!") || user.password.includes("?"))) {
+        resultContent.innerHTML = `<h4 class="text-danger">Registration Failed</h4><p>Password must contain "!" or "?".</p>`;
+        resultDiv.classList.remove("hidden");
+        return;
+        }
+
+        const maskedPassword = "*".repeat(user.password.length);
+
+        resultContent.innerHTML = "";
+
+        const heading = document.createElement("h4");
+        heading.className = "text-success";
+        heading.textContent = "Registration Successful!";
+        resultContent.appendChild(heading);
+
+        const fields = [
+            { label: "First Name", value: user.firstName },
+            { label: "Last Name", value: user.lastName },
+            { label: "Email", value: user.email },
+            { label: "Password", value: password },
+            { label: "Date of Birth", value: user.dob }
+            ];
+
+        fields.forEach(field => {
+        const p = document.createElement("p");
+        const strong = document.createElement("strong");
+        strong.textContent = `${field.label}: `;
+        p.appendChild(strong);
+        p.append(field.value);
+            resultContent.appendChild(p);
+        });
+            resultDiv.classList.remove("hidden");
+        }
 </script>
 
 </body>
