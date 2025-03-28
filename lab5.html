@@ -86,14 +86,7 @@
 
     const maskedPassword = "*".repeat(user.password.length);
 
-    resultContent.innerHTML = `
-      <h4 class="text-success">Registration Successful!</h4>
-      <p><strong>First Name:</strong> ${user.fname}</p>
-      <p><strong>Last Name:</strong> ${user.lname}</p>
-      <p><strong>Email:</strong> ${user.email}</p>
-      <p><strong>Password:</strong> ${maskedPassword}</p>
-      <p><strong>Date of Birth:</strong> ${user.dob}</p>
-    `;
+    
     resultDiv.classList.remove("hidden");
   }
     </script>
