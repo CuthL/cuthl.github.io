@@ -78,11 +78,7 @@
       return;
     }
 
-    if (!(user.password.includes("!") || user.password.includes("?"))) {
-      resultContent.innerHTML = `<h4 class="text-danger">Registration Failed</h4><p>Password must contain "!" or "?".</p>`;
-      resultDiv.classList.remove("hidden");
-      return;
-    }
+    
 
     const maskedPassword = "*".repeat(user.password.length);
 
