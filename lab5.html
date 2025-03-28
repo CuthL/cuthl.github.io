@@ -51,7 +51,7 @@
                 <input type="date" class="form-control" id="dob" name="dob"required>
             </div>
 
-            <button onclick="submitForm()">Register</button>
+            <button type="button" onclick="submitForm()">Register</button>
         </form>
 
         <div id="registrationResult" class="mt-4"></div>            
@@ -69,8 +69,8 @@
       }
     });
 
-    const resultDiv = document.getElementById("result");
-    const resultContent = document.getElementById("resultContent");
+    const resultContent = document.getElementById("registrationResult");
+    const resultDiv = resultContent; 
 
     if (!user.fname || !user.lname || !user.email || !user.password || !user.dob) {
       resultContent.innerHTML = `<h4 class="text-danger">Registration Failed</h4><p>All fields must be filled out.</p>`;
