@@ -51,10 +51,51 @@
                 <input type="date" class="form-control" id="dob" required>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block">Register</button>
+            <button onclick="submitForm()">Register</button>
         </form>
 
         <div id="registrationResult" class="mt-4"></div>            
     </div>
+
+    <script>
+        function submitForm() {
+    const elements = document.getElementById("registrationForm").elements;
+    const inputs = Array.from(elements);
+    let user = {};
+
+    inputs.forEach((el) => {
+      if (el.name) {
+        user[el.name] = el.value.trim();
+      }
+    });
+
+    const resultDiv = document.getElementById("result");
+    const resultContent = document.getElementById("resultContent");
+
+    if (!user.fname || !user.lname || !user.email || !user.password || !user.dob) {
+      resultContent.innerHTML = `<h4 class="text-danger">Registration Failed</h4><p>All fields must be filled out.</p>`;
+      resultDiv.classList.remove("hidden");
+      return;
+    }
+
+    if (!(user.password.includes("!") || user.password.includes("?"))) {
+      resultContent.innerHTML = `<h4 class="text-danger">Registration Failed</h4><p>Password must contain "!" or "?".</p>`;
+      resultDiv.classList.remove("hidden");
+      return;
+    }
+
+    const maskedPassword = "*".repeat(user.password.length);
+
+    resultContent.innerHTML = `
+      <h4 class="text-success">Registration Successful!</h4>
+      <p><strong>First Name:</strong> ${user.fname}</p>
+      <p><strong>Last Name:</strong> ${user.lname}</p>
+      <p><strong>Email:</strong> ${user.email}</p>
+      <p><strong>Password:</strong> ${maskedPassword}</p>
+      <p><strong>Date of Birth:</strong> ${user.dob}</p>
+    `;
+    resultDiv.classList.remove("hidden");
+  }
+    </script>
 
 </body>
