@@ -29,7 +29,7 @@
   <script>
     async function fetchStandings() {
       const season = document.getElementById("seasonInput").value || "current";
-      const url = `https://ergast.com/api/f1/${season}/driverStandings.json`;
+      const url = `https://f1api.dev/api/drivers`;
 
       try {
         const res = await fetch(url);
