@@ -2,43 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>F1 Drivers – f1api.dev</title>
+  <title>F1 Drivers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Bootstrap CDN -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body onload="loadDrivers()">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">F1API.dev</a>
-  </nav>
+<body>
 
-  <div class="container mt-4">
-    <h2 class="text-center mb-4">Formula 1 Drivers</h2>
-    <div class="row" id="driverList"></div>
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Formula 1 Drivers</h1>
+  
+  <input type="text" id="searchInput" class="form-control mb-4" placeholder="Search by name...">
+  
+  <div id="driverContainer" class="row">
+    <!-- Driver cards will be inserted here -->
   </div>
 
-  <script>
-    async function loadDrivers() {
-      const limit = 20; 
-      fetch(`https://f1api.dev/api/drivers`);
-      const data =  res.json();
+  <div id="errorMessage" class="alert alert-danger d-none" role="alert">
+    Failed to fetch driver data. Please try again later.
+  </div>
+</div>
 
-      const drivers = data.drivers;
-      const container = document.getElementById('driverList');
-      container.innerHTML = drivers.map(d => `
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">${d.name} ${d.surname} (#${d.number ?? "?"})</h5>
-              <p class="card-text">
-                <strong>Nationality:</strong> ${d.nationality}<br>
-                <strong>Birthday:</strong> ${d.birthday}<br>
-              </p>
-              <a href="${d.url}" target="_blank" class="btn btn-outline-primary">Wikipedia</a>
-            </div>
+<script>
+  const API_URL = 'https://f1api.dev/api/drivers';
+  const driverContainer = document.getElementById('driverContainer');
+  const searchInput = document.getElementById('searchInput');
+  const errorMessage = document.getElementById('errorMessage');
+  let drivers = [];
+
+  async function fetchDrivers() {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      drivers = data.drivers;
+      displayDrivers(drivers);
+    } catch (error) {
+      errorMessage.classList.remove('d-none');
+    }
+  }
+
+  function displayDrivers(driversToShow) {
+    driverContainer.innerHTML = '';
+    if (driversToShow.length === 0) {
+      driverContainer.innerHTML = '<div class="col-12 text-center text-muted">No drivers found.</div>';
+      return;
+    }
+
+    driversToShow.forEach(driver => {
+      const card = document.createElement('div');
+      card.className = 'col-md-4 mb-4';
+      card.innerHTML = `
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">${driver.name} ${driver.surname}</h5>
+            <p class="card-text">
+              <strong>Nationality:</strong> ${driver.nationality}<br>
+              <strong>Birthday:</strong> ${driver.birthday}<br>
+              <strong>Number:</strong> ${driver.number ?? 'N/A'}
+            </p>
+            <a href="${driver.url}" class="btn btn-primary" target="_blank">More Info</a>
           </div>
         </div>
-      `).join('');
-    }
-  </script>
+      `;
+      driverContainer.appendChild(card);
+    });
+  }
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    const filtered = drivers.filter(driver =>
+      (driver.name + " " + driver.surname).toLowerCase().includes(query)
+    );
+    displayDrivers(filtered);
+  });
+
+  fetchDrivers();
+</script>
+
 </body>
 </html>
