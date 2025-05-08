@@ -3,50 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>F1 Circuits</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body onload="fetchCircuits()">
-
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">🏁 F1 Dashboard</a>
+    <a class="navbar-brand" href="#">F1 API</a>
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="index.html">Standings</a>
-      <a class="nav-item nav-link" href="races.html">Races</a>
+      <a class="nav-item nav-link" href="drivers.html">Drivers</a>
+      <a class="nav-item nav-link" href="teams.html">Teams</a>
       <a class="nav-item nav-link" href="circuits.html">Circuits</a>
+      <a class="nav-item nav-link" href="seasons.html">Seasons</a>
     </div>
   </nav>
 
   <div class="container mt-4">
-    <h2 class="text-center mb-4">Current Season Circuits</h2>
+    <h2 class="text-center">F1 Circuits</h2>
     <div class="row" id="circuitList"></div>
   </div>
 
   <script>
     async function fetchCircuits() {
-      const url = "https://ergast.com/api/f1/current/circuits.json";
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const circuits = data.MRData.CircuitTable.Circuits;
+      const res = await fetch('https://f1api.dev/api/circuits');
+      const circuits = await res.json();
 
-        const container = document.getElementById("circuitList");
-        circuits.forEach(c => {
-          const html = `
-            <div class="col-md-4 mb-3">
-              <div class="card">
-                <div class="card-body">
-                  <h5>${c.circuitName}</h5>
-                  <p>${c.Location.locality}, ${c.Location.country}</p>
-                  <a href="${c.url}" target="_blank">More Info</a>
-                </div>
-              </div>
-            </div>`;
-          container.innerHTML += html;
-        });
-      } catch (err) {
-        alert("Could not load circuits");
-      }
+      const list = document.getElementById("circuitList");
+      list.innerHTML = circuits.map(c => `
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">${c.name}</h5>
+              <p><strong>Location:</strong> ${c.location}<br><strong>Country:</strong> ${c.country}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
   </script>
 </body>
