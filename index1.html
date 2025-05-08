@@ -59,3 +59,203 @@
     <hr>02/20/2025 - Cuthbert Langevine
 </body>
 </html>-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>F1 Dashboard</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f9f9f9;
+    }
+    .container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">🏎️ F1 Dashboard</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="#driverStandings" onclick="showPage('driverStandings')">Driver Standings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#raceResults" onclick="showPage('raceResults')">Race Results</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#driverInfo" onclick="showPage('driverInfo')">Driver Info</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Driver Standings Page -->
+  <div id="driverStandings" class="container mt-4" style="display: none;">
+    <h2 class="text-center">Driver Standings</h2>
+    <div class="form-group">
+      <input type="number" id="seasonInput" class="form-control" placeholder="Enter season year (e.g., 2023)" />
+      <button onclick="fetchDriverStandings()" class="btn btn-primary mt-2">Load Standings</button>
+    </div>
+    <div id="errorMessage" class="alert alert-danger d-none">Failed to load standings.</div>
+    <div id="driverList" class="row"></div>
+  </div>
+
+  <!-- Race Results Page -->
+  <div id="raceResults" class="container mt-4" style="display: none;">
+    <h2 class="text-center">Race Results</h2>
+    <div class="form-group">
+      <input type="number" id="roundInput" class="form-control" placeholder="Enter race round number (e.g., 1, 2, 3)" />
+      <button onclick="fetchRaceResults()" class="btn btn-primary mt-2">Load Race Results</button>
+    </div>
+    <div id="raceResultsList" class="row"></div>
+  </div>
+
+  <!-- Driver Info Page -->
+  <div id="driverInfo" class="container mt-4" style="display: none;">
+    <h2 class="text-center">Driver Info</h2>
+    <div class="form-group">
+      <input type="text" id="driverIdInput" class="form-control" placeholder="Enter driver ID (e.g., max_verstappen)" />
+      <button onclick="fetchDriverInfo()" class="btn btn-primary mt-2">Load Driver Info</button>
+    </div>
+    <div id="driverDetails"></div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    // Show the selected page
+    function showPage(page) {
+      document.getElementById('driverStandings').style.display = 'none';
+      document.getElementById('raceResults').style.display = 'none';
+      document.getElementById('driverInfo').style.display = 'none';
+      document.getElementById(page).style.display = 'block';
+    }
+
+    // Fetch and display Driver Standings
+    async function fetchDriverStandings() {
+      const season = document.getElementById("seasonInput").value || "current";
+      const url = `https://ergast.com/api/f1/${season}/driverStandings.json`;
+      
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const standings = data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+
+        displayDrivers(standings);
+        document.getElementById("errorMessage").classList.add("d-none");
+      } catch (error) {
+        console.error("Error fetching standings:", error);
+        document.getElementById("driverList").innerHTML = "";
+        document.getElementById("errorMessage").classList.remove("d-none");
+      }
+    }
+
+    // Display Driver Standings
+    function displayDrivers(drivers) {
+      const container = document.getElementById("driverList");
+      container.innerHTML = "";
+
+      drivers.forEach(driver => {
+        const d = driver.Driver;
+        const team = driver.Constructors[0].name;
+
+        const card = `
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">${driver.position}. ${d.givenName} ${d.familyName}</h5>
+                <p class="card-text">
+                  <strong>Nationality:</strong> ${d.nationality}<br>
+                  <strong>Team:</strong> ${team}<br>
+                  <strong>Points:</strong> ${driver.points}
+                </p>
+              </div>
+            </div>
+          </div>
+        `;
+        container.innerHTML += card;
+      });
+    }
+
+    // Fetch and display Race Results for a round
+    async function fetchRaceResults() {
+      const round = document.getElementById("roundInput").value;
+      const url = `https://ergast.com/api/f1/current/${round}/results.json`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const results = data.MRData.RaceTable.Races[0].Results;
+
+        displayRaceResults(results);
+      } catch (error) {
+        console.error("Error fetching race results:", error);
+      }
+    }
+
+    // Display Race Results
+    function displayRaceResults(results) {
+      const container = document.getElementById("raceResultsList");
+      container.innerHTML = "";
+
+      results.forEach(result => {
+        const driver = result.Driver;
+        const team = result.Constructor.name;
+        const time = result.Time ? result.Time.time : "N/A";
+
+        const card = `
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">${driver.givenName} ${driver.familyName}</h5>
+                <p class="card-text">
+                  <strong>Team:</strong> ${team}<br>
+                  <strong>Time:</strong> ${time}
+                </p>
+              </div>
+            </div>
+          </div>
+        `;
+        container.innerHTML += card;
+      });
+    }
+
+    // Fetch and display Driver Info
+    async function fetchDriverInfo() {
+      const driverId = document.getElementById("driverIdInput").value;
+      const url = `https://ergast.com/api/f1/drivers/${driverId}.json`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const driver = data.MRData.DriverTable.Drivers[0];
+
+        displayDriverInfo(driver);
+      } catch (error) {
+        console.error("Error fetching driver info:", error);
+      }
+    }
+
+    // Display Driver Info
+    function displayDriverInfo(driver) {
+      const container = document.getElementById("driverDetails");
+
+      container.innerHTML = `
+        <h3>${driver.givenName} ${driver.familyName}</h3>
+        <p><strong>Nationality:</strong> ${driver.nationality}</p>
+        <p><strong>Date of Birth:</strong> ${driver.dateOfBirth}</p>
+        <p><strong>Permanent Number:</strong> ${driver.permanentNumber || "N/A"}</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
