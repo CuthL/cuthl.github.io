@@ -19,7 +19,7 @@
   <script>
     async function loadDrivers() {
       const limit = 20; // Adjust based on your needs
-      const res = await fetch(`https://f1api.dev/api/drivers`);
+      const res = await fetch(`https://f1connectapi.vercel.app/api/drivers?limit=${limit}&offset=0`);
       const data = await res.json();
 
       const drivers = data.drivers;
