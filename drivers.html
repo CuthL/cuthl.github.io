@@ -4,18 +4,30 @@
   <meta charset="UTF-8">
   <title>F1 Drivers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CDN -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container">
+    <a class="navbar-brand" href="drivers.html">F1 Explorer</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link active" href="drivers.html">Drivers</a></li>
+        <li class="nav-item"><a class="nav-link" href="teams.html">Teams</a></li>
+        <li class="nav-item"><a class="nav-link" href="seasons.html">Seasons</a></li>
+        <li class="nav-item"><a class="nav-link" href="circuits.html">Circuits</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  
 <div class="container mt-5">
   <h1 class="text-center mb-4">Formula 1 Drivers</h1>
   
   <input type="text" id="searchInput" class="form-control mb-4" placeholder="Search by name...">
   
   <div id="driverContainer" class="row">
-    <!-- Driver cards will be inserted here -->
   </div>
 
   <div id="errorMessage" class="alert alert-danger d-none" role="alert">
@@ -33,7 +45,6 @@
   async function fetchDrivers() {
     try {
       const response = await fetch(API_URL);
-      if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
       drivers = data.drivers;
       displayDrivers(drivers);
