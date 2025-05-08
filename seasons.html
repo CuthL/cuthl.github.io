@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>F1 Seasons</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body onload="fetchSeasons()">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">F1 API</a>
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="drivers.html">Drivers</a>
+      <a class="nav-item nav-link" href="teams.html">Teams</a>
+      <a class="nav-item nav-link" href="circuits.html">Circuits</a>
+      <a class="nav-item nav-link" href="seasons.html">Seasons</a>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h2 class="text-center">F1 Seasons</h2>
+    <ul class="list-group" id="seasonList"></ul>
+  </div>
+
+  <script>
+    async function fetchSeasons() {
+      const res = await fetch('https://f1api.dev/api/seasons');
+      const seasons = await res.json();
+
+      const list = document.getElementById("seasonList");
+      list.innerHTML = seasons.map(s => `
+        <li class="list-group-item">${s.year}</li>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
