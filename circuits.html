@@ -1,4 +1,4 @@
-<!--<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -23,7 +23,7 @@
 
   <script>
     async function fetchCircuits() {
-      const res = await fetch('https://ergast.com/api/f1/current/circuits.json');
+      const res = await fetch('https://f1api.dev/api/circuits');
       const circuits = await res.json();
 
       const list = document.getElementById("circuitList");
