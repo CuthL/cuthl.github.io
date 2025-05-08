@@ -18,9 +18,9 @@
 
   <script>
     async function loadDrivers() {
-      const limit = 20; // Adjust based on your needs
+      const limit = 20; 
       fetch(`https://f1api.dev/api/drivers`);
-      const data = await res.json();
+      const data =  res.json();
 
       const drivers = data.drivers;
       const container = document.getElementById('driverList');
