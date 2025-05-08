@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>F1 Race Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">🏁 F1 Dashboard</a>
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="index.html">Standings</a>
+      <a class="nav-item nav-link" href="races.html">Races</a>
+      <a class="nav-item nav-link" href="circuits.html">Circuits</a>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h2 class="text-center mb-4">Race Results</h2>
+    <input type="number" id="roundInput" class="form-control mb-3" placeholder="Enter round number (e.g. 3)">
+    <button class="btn btn-primary mb-4" onclick="fetchResults()">Load Results</button>
+
+    <div id="raceResults" class="row"></div>
+  </div>
+
+  <script>
+    async function fetchResults() {
+      const round = document.getElementById("roundInput").value || 1;
+      const url = `https://ergast.com/api/f1/current/${round}/results.json`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const results = data.MRData.RaceTable.Races[0].Results;
+
+        const container = document.getElementById("raceResults");
+        container.innerHTML = "";
+
+        results.forEach(r => {
+          const html = `
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <h5>${r.position}. ${r.Driver.givenName} ${r.Driver.familyName}</h5>
+                  <p><strong>Constructor:</strong> ${r.Constructor.name}<br>
+                  <strong>Time:</strong> ${r.Time?.time || 'N/A'}</p>
+                </div>
+              </div>
+            </div>`;
+          container.innerHTML += html;
+        });
+      } catch (err) {
+        alert("Could not fetch race results");
+      }
+    }
+  </script>
+</body>
+</html>
