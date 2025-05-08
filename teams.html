@@ -23,7 +23,7 @@
 
   <script>
     async function fetchTeams() {
-      const res = await fetch('https://f1api.dev/api/teams');
+      const res = await fetch('https://ergast.com/api/f1/current/constructors.json');
       const teams = await res.json();
 
       const list = document.getElementById("teamList");

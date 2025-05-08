@@ -23,7 +23,7 @@
 
   <script>
     async function fetchSeasons() {
-      const res = await fetch('https://f1api.dev/api/seasons');
+      const res = await fetch('https://ergast.com/api/f1/current/driverStandings.json');
       const seasons = await res.json();
 
       const list = document.getElementById("seasonList");
