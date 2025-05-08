@@ -2,37 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>F1 Drivers</title>
+  <title>F1 Drivers – f1api.dev</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body onload="fetchDrivers()">
+<body onload="loadDrivers()">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">F1 API</a>
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" href="drivers.html">Drivers</a>
-      <a class="nav-item nav-link" href="teams.html">Teams</a>
-      <a class="nav-item nav-link" href="circuits.html">Circuits</a>
-      <a class="nav-item nav-link" href="seasons.html">Seasons</a>
-    </div>
+    <a class="navbar-brand" href="#">F1API.dev</a>
   </nav>
 
   <div class="container mt-4">
-    <h2 class="text-center">F1 Drivers</h2>
+    <h2 class="text-center mb-4">Formula 1 Drivers</h2>
     <div class="row" id="driverList"></div>
   </div>
 
   <script>
-    async function fetchDrivers() {
-      const res = await fetch('https://f1api.dev/api/drivers');
-      const drivers = await res.json();
+    async function loadDrivers() {
+      const limit = 20; // Adjust based on your needs
+      const res = await fetch(`https://f1api.dev/api/drivers`);
+      const data = await res.json();
 
-      const list = document.getElementById("driverList");
-      list.innerHTML = drivers.map(d => `
-        <div class="col-md-4 mb-3">
-          <div class="card">
+      const drivers = data.drivers;
+      const container = document.getElementById('driverList');
+      container.innerHTML = drivers.map(d => `
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
             <div class="card-body">
-              <h5 class="card-title">${d.name}</h5>
-              <p><strong>Team:</strong> ${d.team}<br><strong>Nationality:</strong> ${d.nationality}</p>
+              <h5 class="card-title">${d.name} ${d.surname} (#${d.number ?? "?"})</h5>
+              <p class="card-text">
+                <strong>Nationality:</strong> ${d.nationality}<br>
+                <strong>Birthday:</strong> ${d.birthday}<br>
+              </p>
+              <a href="${d.url}" target="_blank" class="btn btn-outline-primary">Wikipedia</a>
             </div>
           </div>
         </div>
