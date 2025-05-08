@@ -23,7 +23,7 @@
 
   <script>
     async function fetchDrivers() {
-      const res = await fetch('https://f1api.dev/api/drivers');
+      const res = await fetch('https://f1api.dev/docs/drivers/drivers');
       const drivers = await res.json();
 
       const list = document.getElementById("driverList");
