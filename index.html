@@ -66,18 +66,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Current Race - F1</title>
+  <title>F1 Races</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
 
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
       <a class="navbar-brand" href="drivers.html">F1 Explorer</a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item"><a class="nav-link active" href="index.html">Current Races</a></li>
+          <li class="nav-item"><a class="nav-link active" href="index.html">Races</a></li>
           <li class="nav-item"><a class="nav-link" href="drivers.html">Drivers</a></li>
           <li class="nav-item"><a class="nav-link" href="teams.html">Teams</a></li>
           <li class="nav-item"><a class="nav-link" href="seasons.html">Seasons</a></li>
@@ -88,57 +89,64 @@
   </nav>
 
   <div class="container">
-    <h1 class="text-center mb-4">Current F1 Race</h1>
-    <div id="raceContainer" class="card shadow p-4"></div>
+    <h1 class="text-center mb-4">Formula 1 Races</h1>
+    <input type="text" id="searchInput" class="form-control mb-4" placeholder="Search by circuit, city or country...">
+    <div id="raceContainer" class="row"></div>
   </div>
 
   <script>
-    fetch('https://f1api.dev/api/2025')
+    let allRaces = [];
+
+    function displayRaces(races) {
+      const container = document.getElementById('raceContainer');
+      container.innerHTML = '';
+
+      if (races.length === 0) {
+        container.innerHTML = '<div class="col-12 text-center text-muted">No races found.</div>';
+        return;
+      }
+
+      races.forEach(race => {
+        const c = race.circuit;
+        container.innerHTML += `
+          <div class="col-md-6 mb-4">
+            <div class="card shadow h-100">
+              <div class="card-body">
+                <h5 class="card-title">${c.circuitName}</h5>
+                <p class="card-text">
+                  <strong>Location:</strong> ${c.city}, ${c.country}<br>
+                  <strong>Length:</strong> ${c.circuitLength}<br>
+                  <strong>Lap Record:</strong> ${c.lapRecord}<br>
+                  <strong>Corners:</strong> ${c.corners}<br>
+                  <strong>First Year:</strong> ${c.firstParticipationYear}<br>
+                  <a href="${c.url}" target="_blank">Wikipedia</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('searchInput').addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = allRaces.filter(r =>
+        r.circuit.circuitName.toLowerCase().includes(query) ||
+        r.circuit.city.toLowerCase().includes(query) ||
+        r.circuit.country.toLowerCase().includes(query)
+      );
+      displayRaces(filtered);
+    });
+
+    fetch('https://f1api.dev/api/races')
       .then(res => res.json())
       .then(data => {
-        const race = data.race[0];
-        const circuit = race.circuit;
-        const schedule = race.schedule;
-        const champ = data.championship;
-
-        const container = document.getElementById('raceContainer');
-        container.innerHTML = `
-          <h3>${champ.championshipName} - Round ${race.round} (${data.season})</h3>
-          <p><a href="${champ.url}" target="_blank">${champ.url}</a></p>
-
-          <hr>
-
-          <h4>Circuit: ${circuit.circuitName}</h4>
-          <p><strong>Location:</strong> ${circuit.city}, ${circuit.country}<br>
-             <strong>Length:</strong> ${circuit.circuitLength}<br>
-             <strong>First Participation:</strong> ${circuit.firstParticipationYear}<br>
-             <strong>Corners:</strong> ${circuit.corners}<br>
-             <strong>Lap Record:</strong> ${circuit.lapRecord} (by ${circuit.fastestLapDriverId} - ${circuit.fastestLapTeamId}, ${circuit.fastestLapYear})<br>
-             <a href="${circuit.url}" target="_blank">Circuit Wikipedia</a>
-          </p>
-
-          <hr>
-
-          <h5>Race Weekend Schedule</h5>
-          <ul>
-            <li><strong>FP1:</strong> ${schedule.fp1.date ?? 'N/A'}</li>
-            <li><strong>FP2:</strong> ${schedule.fp2.date ?? 'N/A'}</li>
-            <li><strong>FP3:</strong> ${schedule.fp3.date ?? 'N/A'}</li>
-            <li><strong>Qualifying:</strong> ${schedule.qualy.date ?? 'N/A'}</li>
-            <li><strong>Race:</strong> ${schedule.race.date ?? 'N/A'}</li>
-            ${schedule.sprintQualy.date ? `<li><strong>Sprint Qualifying:</strong> ${schedule.sprintQualy.date}</li>` : ''}
-            ${schedule.sprintRace.date ? `<li><strong>Sprint Race:</strong> ${schedule.sprintRace.date}</li>` : ''}
-          </ul>
-
-          <hr>
-
-          <p><strong>Winner:</strong> ${race.winner ?? 'TBD'}<br>
-             <strong>Winning Team:</strong> ${race.teamWinner ?? 'TBD'}</p>
-        `;
+        allRaces = data.races;
+        displayRaces(allRaces);
       })
       .catch(() => {
         document.getElementById('raceContainer').innerHTML =
-          '<div class="alert alert-danger">Failed to load race info.</div>';
+          '<div class="alert alert-danger">Failed to load races.</div>';
       });
   </script>
 </body>
