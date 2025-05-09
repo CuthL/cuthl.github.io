@@ -8,6 +8,7 @@
 </head>
 <body>
 
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
       <a class="navbar-brand" href="drivers.html">F1 Explorer</a>
@@ -24,25 +25,38 @@
 
   <div class="container">
     <h1 class="text-center mb-4">F1 Teams</h1>
-    <div id="teamsContainer" class="row"></div>
+    <div class="row" id="teamsContainer"></div>
   </div>
 
   <script>
     fetch('https://f1api.dev/api/teams')
       .then(res => res.json())
       .then(data => {
+        const teams = data.teams;
         const container = document.getElementById('teamsContainer');
-        data.teams.forEach(team => {
+
+        teams.forEach(team => {
           container.innerHTML += `
-            <div class="col-md-4 mb-3">
-              <div class="card shadow">
+            <div class="col-md-6 mb-4">
+              <div class="card shadow h-100">
                 <div class="card-body">
-                  <h5>${team.name}</h5>
-                  <p><strong>Nationality:</strong> ${team.nationality}</p>
+                  <h4 class="card-title">
+                    <a href="${team.url}" target="_blank">${team.teamName}</a>
+                  </h4>
+                  <p class="card-text">
+                    <strong>Nationality:</strong> ${team.teamNationality}<br>
+                    <strong>First Appearance:</strong> ${team.firstAppeareance}<br>
+                    <strong>Constructors' Championships:</strong> ${team.constructorsChampionships}<br>
+                    <strong>Drivers' Championships:</strong> ${team.driversChampionships}
+                  </p>
                 </div>
               </div>
             </div>`;
         });
+      })
+      .catch(err => {
+        document.getElementById('teamsContainer').innerHTML =
+          '<div class="col-12 alert alert-danger">Failed to load teams.</div>';
       });
   </script>
 </body>
