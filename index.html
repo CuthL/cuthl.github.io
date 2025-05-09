@@ -1,153 +1,96 @@
-<!--<!DOCTYPE html>
-<html>
-<head>
-  <title>Cuthbert's Portfolio</title>
-</head>
-<style>
-    table, th, td {
-      border:1px solid black;
-    }
-</style>
-<body>
-
-    <div class="navbar">
-     <ul>
-      <li><a href="https://cuthl.github.io/">Home</a></li>
-      <li><a href="lab3.html">Lab 3</a></li>
-      <li><a href="lab4.html">Lab 4</a></li>
-      <li><a href="lab5.html">Lab 5</a></li>
-      <li><a href="lab6.html">Lab 6</a></li>
-      </ul>
-    </div>
-    
-    <h1>Summary</h1>
-    As a Computer Science major, I have developed a strong foundation in coding with proficiency in C++ and Python, and have applied these skills in real-world projects. I successfully built a bank application, implementing both front-end and back-end functionality, and a mobile flashcard application using Kotlin, which enhanced my expertise in Android development. My experience spans across full-stack development, where I contributed to both front-end user interfaces and back-end systems, demonstrating my ability to work across the development lifecycle. I am eager to leverage my technical skills and problem-solving abilities to contribute to innovative projects.
-
-    <h2>List of Coding Languages</h2>
-    <ul>
-        <li>c++</li>
-        <li>Python</li>
-        <li>Kotlin</li>
-        <li>JavaScript</li>
-    </ul>
-
-    <h3>Table of Projects and Languages Used</h3>
-    <table style="width:100%">
-        <tr>
-          <th>Project</th>
-          <th>Languages</th>
-        </tr>
-        <tr>
-          <td>Bank Application</td>
-          <td>C++, CSS, JavaScript</td>
-        </tr>
-        <tr>
-            <td>Flashcard</td>
-            <td>Kotlin</td>
-          </tr>
-      </table>
-      <h4>Website</h4>
-      <a class=""
-        href="https://github.com/CuthL/cuthl.github.io">
-            <h1>Lab1</h1>
-        </article>
-    </a>
-      
-    <h5>Image</h5>
-    <img src="103461214_0xaeazz6sf-Gray 19.jpg" alt="ImageT" width="300" height="300">
-
-    <hr>02/20/2025 - Cuthbert Langevine
-</body>
-</html>-->
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>F1 Races</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <title>F1 Drivers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
-      <a class="navbar-brand" href="drivers.html">F1 Explorer</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item"><a class="nav-link active" href="index.html">Races</a></li>
-          <li class="nav-item"><a class="nav-link" href="drivers.html">Drivers</a></li>
-          <li class="nav-item"><a class="nav-link" href="teams.html">Teams</a></li>
-          <li class="nav-item"><a class="nav-link" href="seasons.html">Seasons</a></li>
-          <li class="nav-item"><a class="nav-link" href="circuits.html">Circuits</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
   <div class="container">
-    <h1 class="text-center mb-4">Formula 1 Races</h1>
-    <input type="text" id="searchInput" class="form-control mb-4" placeholder="Search by circuit, city or country...">
-    <div id="raceContainer" class="row"></div>
+    <a class="navbar-brand" href="drivers.html">F1 Explorer</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link active" href="index.html">Races</a></li>
+        <li class="nav-item"><a class="nav-link active" href="drivers.html">Drivers</a></li>
+        <li class="nav-item"><a class="nav-link" href="teams.html">Teams</a></li>
+        <li class="nav-item"><a class="nav-link" href="seasons.html">Seasons</a></li>
+        <li class="nav-item"><a class="nav-link" href="circuits.html">Circuits</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Formula 1 Drivers</h1>
+  
+  <input type="text" id="searchInput" class="form-control mb-4" placeholder="Search by name...">
+  
+  <div id="driverContainer" class="row">
   </div>
 
-  <script>
-    let allRaces = [];
+  <div id="errorMessage" class="alert alert-danger d-none" role="alert">
+    Failed to fetch driver data. Please try again later.
+  </div>
+</div>
 
-    function displayRaces(races) {
-      const container = document.getElementById('raceContainer');
-      container.innerHTML = '';
+<script>
+  const API_URL = 'https://f1api.dev/api/drivers';
+  const driverContainer = document.getElementById('driverContainer');
+  const searchInput = document.getElementById('searchInput');
+  const errorMessage = document.getElementById('errorMessage');
+  let drivers = [];
 
-      if (races.length === 0) {
-        container.innerHTML = '<div class="col-12 text-center text-muted">No races found.</div>';
-        return;
-      }
+  async function fetchDrivers() {
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      drivers = data.drivers;
+      displayDrivers(drivers);
+    } catch (error) {
+      errorMessage.classList.remove('d-none');
+    }
+  }
 
-      races.forEach(race => {
-        const c = race.circuit;
-        container.innerHTML += `
-          <div class="col-md-6 mb-4">
-            <div class="card shadow h-100">
-              <div class="card-body">
-                <h5 class="card-title">${c.circuitName}</h5>
-                <p class="card-text">
-                  <strong>Location:</strong> ${c.city}, ${c.country}<br>
-                  <strong>Length:</strong> ${c.circuitLength}<br>
-                  <strong>Lap Record:</strong> ${c.lapRecord}<br>
-                  <strong>Corners:</strong> ${c.corners}<br>
-                  <strong>First Year:</strong> ${c.firstParticipationYear}<br>
-                  <a href="${c.url}" target="_blank">Wikipedia</a>
-                </p>
-              </div>
-            </div>
-          </div>
-        `;
-      });
+  function displayDrivers(driversToShow) {
+    driverContainer.innerHTML = '';
+    if (driversToShow.length === 0) {
+      driverContainer.innerHTML = '<div class="col-12 text-center text-muted">No drivers found.</div>';
+      return;
     }
 
-    document.getElementById('searchInput').addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      const filtered = allRaces.filter(r =>
-        r.circuit.circuitName.toLowerCase().includes(query) ||
-        r.circuit.city.toLowerCase().includes(query) ||
-        r.circuit.country.toLowerCase().includes(query)
-      );
-      displayRaces(filtered);
+    driversToShow.forEach(driver => {
+      const card = document.createElement('div');
+      card.className = 'col-md-4 mb-4';
+      card.innerHTML = `
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">${driver.name} ${driver.surname}</h5>
+            <p class="card-text">
+              <strong>Nationality:</strong> ${driver.nationality}<br>
+              <strong>Birthday:</strong> ${driver.birthday}<br>
+              <strong>Number:</strong> ${driver.number ?? 'N/A'}
+            </p>
+            <a href="${driver.url}" class="btn btn-primary" target="_blank">More Info</a>
+          </div>
+        </div>
+      `;
+      driverContainer.appendChild(card);
     });
+  }
 
-    fetch('https://f1api.dev/api/races')
-      .then(res => res.json())
-      .then(data => {
-        allRaces = data.races;
-        displayRaces(allRaces);
-      })
-      .catch(() => {
-        document.getElementById('raceContainer').innerHTML =
-          '<div class="alert alert-danger">Failed to load races.</div>';
-      });
-  </script>
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    const filtered = drivers.filter(driver =>
+      (driver.name + " " + driver.surname).toLowerCase().includes(query)
+    );
+    displayDrivers(filtered);
+  });
+
+  fetchDrivers();
+</script>
+
 </body>
 </html>
