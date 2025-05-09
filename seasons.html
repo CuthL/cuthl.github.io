@@ -8,6 +8,7 @@
 </head>
 <body>
 
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
       <a class="navbar-brand" href="drivers.html">F1 Explorer</a>
@@ -24,17 +25,26 @@
 
   <div class="container">
     <h1 class="text-center mb-4">F1 Seasons</h1>
-    <ul class="list-group" id="seasonList"></ul>
+    <div id="seasonContainer" class="list-group"></div>
   </div>
 
   <script>
     fetch('https://f1api.dev/api/seasons')
       .then(res => res.json())
       .then(data => {
-        const list = document.getElementById('seasonList');
-        data.seasons.forEach(season => {
-          list.innerHTML += `<li class="list-group-item">${season}</li>`;
+        const seasons = data.championships;
+        const container = document.getElementById('seasonContainer');
+
+        seasons.forEach(season => {
+          container.innerHTML += `
+            <a href="${season.url}" target="_blank" class="list-group-item list-group-item-action">
+              <strong>${season.year}</strong>: ${season.championshipName}
+            </a>`;
         });
+      })
+      .catch(err => {
+        document.getElementById('seasonContainer').innerHTML =
+          '<div class="alert alert-danger">Failed to load seasons.</div>';
       });
   </script>
 </body>
