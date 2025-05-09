@@ -1,0 +1,145 @@
+<!--<!DOCTYPE html>
+<html>
+<head>
+  <title>Cuthbert's Portfolio</title>
+</head>
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+</style>
+<body>
+
+    <div class="navbar">
+     <ul>
+      <li><a href="https://cuthl.github.io/">Home</a></li>
+      <li><a href="lab3.html">Lab 3</a></li>
+      <li><a href="lab4.html">Lab 4</a></li>
+      <li><a href="lab5.html">Lab 5</a></li>
+      <li><a href="lab6.html">Lab 6</a></li>
+      </ul>
+    </div>
+    
+    <h1>Summary</h1>
+    As a Computer Science major, I have developed a strong foundation in coding with proficiency in C++ and Python, and have applied these skills in real-world projects. I successfully built a bank application, implementing both front-end and back-end functionality, and a mobile flashcard application using Kotlin, which enhanced my expertise in Android development. My experience spans across full-stack development, where I contributed to both front-end user interfaces and back-end systems, demonstrating my ability to work across the development lifecycle. I am eager to leverage my technical skills and problem-solving abilities to contribute to innovative projects.
+
+    <h2>List of Coding Languages</h2>
+    <ul>
+        <li>c++</li>
+        <li>Python</li>
+        <li>Kotlin</li>
+        <li>JavaScript</li>
+    </ul>
+
+    <h3>Table of Projects and Languages Used</h3>
+    <table style="width:100%">
+        <tr>
+          <th>Project</th>
+          <th>Languages</th>
+        </tr>
+        <tr>
+          <td>Bank Application</td>
+          <td>C++, CSS, JavaScript</td>
+        </tr>
+        <tr>
+            <td>Flashcard</td>
+            <td>Kotlin</td>
+          </tr>
+      </table>
+      <h4>Website</h4>
+      <a class=""
+        href="https://github.com/CuthL/cuthl.github.io">
+            <h1>Lab1</h1>
+        </article>
+    </a>
+      
+    <h5>Image</h5>
+    <img src="103461214_0xaeazz6sf-Gray 19.jpg" alt="ImageT" width="300" height="300">
+
+    <hr>02/20/2025 - Cuthbert Langevine
+</body>
+</html>-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Current Race - F1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="drivers.html">F1 Explorer</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Current Races</a></li>
+          <li class="nav-item"><a class="nav-link" href="drivers.html">Drivers</a></li>
+          <li class="nav-item"><a class="nav-link" href="teams.html">Teams</a></li>
+          <li class="nav-item"><a class="nav-link" href="seasons.html">Seasons</a></li>
+          <li class="nav-item"><a class="nav-link" href="circuits.html">Circuits</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="text-center mb-4">Current F1 Race</h1>
+    <div id="raceContainer" class="card shadow p-4"></div>
+  </div>
+
+  <script>
+    fetch('https://f1api.dev/api/current')
+      .then(res => res.json())
+      .then(data => {
+        const race = data.race[0];
+        const circuit = race.circuit;
+        const schedule = race.schedule;
+        const champ = data.championship;
+
+        const container = document.getElementById('raceContainer');
+        container.innerHTML = `
+          <h3>${champ.championshipName} - Round ${race.round} (${data.season})</h3>
+          <p><a href="${champ.url}" target="_blank">${champ.url}</a></p>
+
+          <hr>
+
+          <h4>Circuit: ${circuit.circuitName}</h4>
+          <p><strong>Location:</strong> ${circuit.city}, ${circuit.country}<br>
+             <strong>Length:</strong> ${circuit.circuitLength}<br>
+             <strong>First Participation:</strong> ${circuit.firstParticipationYear}<br>
+             <strong>Corners:</strong> ${circuit.corners}<br>
+             <strong>Lap Record:</strong> ${circuit.lapRecord} (by ${circuit.fastestLapDriverId} - ${circuit.fastestLapTeamId}, ${circuit.fastestLapYear})<br>
+             <a href="${circuit.url}" target="_blank">Circuit Wikipedia</a>
+          </p>
+
+          <hr>
+
+          <h5>Race Weekend Schedule</h5>
+          <ul>
+            <li><strong>FP1:</strong> ${schedule.fp1.date ?? 'N/A'}</li>
+            <li><strong>FP2:</strong> ${schedule.fp2.date ?? 'N/A'}</li>
+            <li><strong>FP3:</strong> ${schedule.fp3.date ?? 'N/A'}</li>
+            <li><strong>Qualifying:</strong> ${schedule.qualy.date ?? 'N/A'}</li>
+            <li><strong>Race:</strong> ${schedule.race.date ?? 'N/A'}</li>
+            ${schedule.sprintQualy.date ? `<li><strong>Sprint Qualifying:</strong> ${schedule.sprintQualy.date}</li>` : ''}
+            ${schedule.sprintRace.date ? `<li><strong>Sprint Race:</strong> ${schedule.sprintRace.date}</li>` : ''}
+          </ul>
+
+          <hr>
+
+          <p><strong>Winner:</strong> ${race.winner ?? 'TBD'}<br>
+             <strong>Winning Team:</strong> ${race.teamWinner ?? 'TBD'}</p>
+        `;
+      })
+      .catch(() => {
+        document.getElementById('raceContainer').innerHTML =
+          '<div class="alert alert-danger">Failed to load race info.</div>';
+      });
+  </script>
+</body>
+</html>
