@@ -8,6 +8,7 @@
 </head>
 <body>
 
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
       <a class="navbar-brand" href="drivers.html">F1 Explorer</a>
@@ -31,18 +32,32 @@
     fetch('https://f1api.dev/api/circuits')
       .then(res => res.json())
       .then(data => {
+        const circuits = data.circuits;
         const container = document.getElementById('circuitContainer');
-        data.circuits.forEach(circuit => {
+
+        circuits.forEach(circuit => {
           container.innerHTML += `
-            <div class="col-md-4 mb-3">
-              <div class="card shadow">
+            <div class="col-md-6 mb-4">
+              <div class="card shadow h-100">
                 <div class="card-body">
-                  <h5>${circuit.name}</h5>
-                  <p><strong>Location:</strong> ${circuit.location}</p>
+                  <h4 class="card-title">${circuit.circuitName}</h4>
+                  <p class="card-text">
+                    <strong>Location:</strong> ${circuit.city}, ${circuit.country}<br>
+                    <strong>Length:</strong> ${circuit.circuitLength} m<br>
+                    <strong>First GP:</strong> ${circuit.firstParticipationYear}<br>
+                    <strong>Corners:</strong> ${circuit.numberOfCorners}<br>
+                    <strong>Lap Record:</strong> ${circuit.lapRecord} <br>
+                    <strong>Fastest Lap:</strong> ${circuit.fastestLapDriverId} (${circuit.fastestLapTeamId}, ${circuit.fastestLapYear})
+                  </p>
+                  <a href="${circuit.url}" class="btn btn-primary btn-sm" target="_blank">Wikipedia</a>
                 </div>
               </div>
             </div>`;
         });
+      })
+      .catch(err => {
+        document.getElementById('circuitContainer').innerHTML =
+          '<div class="col-12 alert alert-danger">Failed to load circuits.</div>';
       });
   </script>
 </body>
